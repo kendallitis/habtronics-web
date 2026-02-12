@@ -1,15 +1,13 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-const productDescriptions = import.meta.glob("../../content/*.md", {
+import { getProductData } from "../../lib/stripe";
+const productDescriptions = import.meta.glob("../../content/*.{md,mdx}", {
   eager: true,
 });
 
 export const prerender = false;
 
-export const response: any = await fetch(
-  "http://habtronics.com/api/retrieve_product_meta",
-);
-export const products = await response.json();
+export const products = await getProductData();
 
 export async function getStaticPaths() {
   return products.map((product: any) => ({
@@ -19,6 +17,7 @@ export async function getStaticPaths() {
 
 const { product } = Astro.params;
 const productData = products.find((p: any) => p.metadata.short === product);
+
 const stock = Number(productData?.metadata?.stock);
 console.log("Stock as number:", stock);
 const productDesc = Object.values(productDescriptions).find(
@@ -29,17 +28,15 @@ const productDesc = Object.values(productDescriptions).find(
 <Layout>
   <div
     id="product-page"
-    class="-mt-20 grid grid-cols-[40%_60%] w-full h-full min-h-screen"
+    class="-mt-20 grid grid-cols-[25%_75%] w-full min-h-screen"
   >
     <div
       id="showcase-section"
-      class="bg-[#1B0C35] min-h-full flex items-center flex-col"
+      class="bg-[#1B0C35] min-h-screen flex items-center flex-col"
     >
-      <div id="content" class="sticky top-0 flex flex-col items-center">
-        <div class="mt-[80px] mb-5 self-start -ml-20">
-          <a href="/shop" class="text-white font-sora text-2xl hover-50"
-            >&lt; Back to Shop</a
-          >
+      <div id="content" class="sticky top-0 flex flex-col items-center w-[400px]">
+        <div class="mt-[80px] mb-5 w-[400px] text-left">
+          <a href="/shop" class="text-white font-sora text-lg hover-50">&lt; Back to Shop</a>
         </div>
         <img
           src={productData.image}
@@ -50,7 +47,7 @@ const productDesc = Object.values(productDescriptions).find(
           <button
             id="add-to-cart"
             class:list={[
-              "font-sora text-2xl w-50 h-15 rounded-4xl",
+              "font-sora text-lg w-35 h-10 rounded-xl",
               stock === 0
                 ? "bg-gray-500 text-black cursor-not-allowed"
                 : "bg-white text-black hover-50 cursor-pointer",
@@ -59,12 +56,12 @@ const productDesc = Object.values(productDescriptions).find(
           >
             {stock === 0 ? "Out of Stock" : "Add to Cart"}
           </button>
-          <p class="font-sora text-3xl text-white">${productData.price}</p>
+          <p class="font-sora text-xl text-white">${productData.price}</p>
         </div>
       </div>
     </div>
     <div id="product-info" class="ml-20 mr-20">
-      <div class="mt-[100px] font-inter text-xl">
+      <div class="mt-[100px] font-inter text-xl prose prose-xl max-w-none prose-headings:font-sora prose-h1:text-3xl prose-h1:font-extrabold prose-h2:font-inter prose-h2:font-bold prose-h2:text-lg prose-p:font-inter prose-p:text-sm">
         <productDesc.Content />
       </div>
     </div>

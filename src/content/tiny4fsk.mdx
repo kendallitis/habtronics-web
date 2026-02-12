@@ -1,0 +1,98 @@
+---
+slug: "tiny4fsk"
+title: "Tiny4FSK - The Lightweight Horus Binary Tracker"
+---
+
+<img src="/logos/Tiny4FSK_FullText.svg" alt="Tiny4FSK Logo" class="w-[65%] mx-auto pr-16 block" />
+<img src="/images/TinyPage_TinyHeroShot.png" alt="Tiny4FSK Board" class="w-[70%] mx-auto block" />
+
+# What is Tiny4FSK?
+Tiny4FSK is a radio transmitter board that sends live telemetry over long distances and altitudes using 4FSK modulation.  It is designed to be used on high altitude balloons, drones, and rockets to receive GPS position, temperature, pressure, and humidity in real time from the ground.
+
+This is an open source project.  Both the code and files to manufacture your own can be found at our github page here:
+https://github.com/New-England-Weather-Balloon-Society/Tiny4FSK
+
+We also sell fully assembled boards, along with associated accessories here in the shop.
+
+# What does it come with?
+<img src="/images/TinyPage_WhatItComesWith.png" alt="Tiny4FSK, headers, battery, 2 antennas, SMA connector" class="w-[70%] mx-auto block" />
+
+*psst... maybe some stickers as well ^_^*
+
+# Key Features
+## Packet Interval
+Tiny4FSK will transmit telemetry reports as fast as every 4 seconds.  This provides much more real time, granular data over the course of a flight and landing than most trackers.
+
+## Frequencies
+The Tiny4FSK codebase uses 8 different “channels” or frequencies (near 432 MHz). This pairs with the receiver firmware, which can search for all 8 channels simultaneously.  This means multiple transmitters can be used on the same flight with no time slotting, and a network of properly configured receivers can pick up each other’s flights automatically.
+
+## Horus Binary Protocol
+Tiny4FSK uses a new, modern protocol called Horus Binary v2, developed open source by Project Horus. It uses the highly efficient 4FSK modulation, and the protocol sports Golay (23,12) Forward Error Correction, which allows it to accurately decode very weak signals.
+
+## Built in Environmental Sensor
+Unlike most trackers, Tiny4FSK has an onboard BME280 temperature, pressure, humidity sensor, and sends this environmental data in formatted packet fields, which allows for instant plotting in Grafana during the flight.
+
+## Extensible I/O Pins
+Tiny has 5 GPIO pins, as well as dedicated I2C and SPI pins for easily adding unique sensors.  Users can modify the open source Arduino code and upload via USB-C.
+
+## Small and Lightweight
+With the USB breakout snapped off for flight, the Tiny4FSK board only measures 21.5mm x 76.3mm and weighs Xg.  When soldering on the supplied battery clips, it can be powered off either 1 AA or AAA Energizer Ultimate Lithium battery (see battery life expectations), and easily slid inside a rocket fuselage, drone body, hung inline from a high altitude balloon or mounted to a payload box.  Dedicated battery pins can alternately be used to run wires to an external battery, allowing more mounting and battery configurations.
+
+## Modern GPS module
+Tiny4FSK’s ATGM336H GPS module, together with a chip antenna and impedance matching network, acquires a GPS fix quickly.  At high altitudes, it will often acquire up to 30 satellites, making for more accurate position and altitude. 
+
+## Small antenna
+While APRS trackers typically require at least a 46cm wire antenna, Tiny4FSK is launched with just a short 15.5cm bit of flexible wire to transmit, making it much easier to mount on compact payloads and craft. 
+
+## Range
+Tiny4FSK has been picked up and decoded from ranges up to 250km. Directional antennas could increase that range further.  Recommended receive station setups can be found in our GitHub page, linked below under “How To Use.”
+
+
+<details>
+<summary> Alternate Tracking Methods </summary>
+
+Traditional long range telemetry systems used for high altitude balloons, drones, and rockets have a number of problems we sought to eliminate with the development of Tiny4FSK.  
+
+## APRS
+Automated Packet Reporting System has been the leading protocol used by consumers and hobbyists for tracking high altitude balloons for the last 30 years.  However, it has few problems:
+
+## Frequency pile up
+APRS uses a standard frequency of 144.390 MHz in order to make use of the widespread APRS i-Gate network. This is a collection of receivers set up to receive telemetry from cars, trucks, weather stations, APRS chat, and users of all kind.  As a result, chances of interference are high, and any two transmitters being used together must be carefully time slotted using code to prevent interfering with each other.  Even though the i-Gate network can be useful for receiving your signals, there will usually not be a station close enough to your payload’s landing site in order to pinpoint the final coordinates for recovery, or one close enough to your launch site for pre-launch testing, thus requiring hobbyists to build their own ground stations anyway.
+
+## Packet Interval
+It is considered common courtesy among the amateur radio community to transmit APRS packets no more often than once per minute on the ground, and often once per 10 minutes at high altitudes.  This leads to less frequent updates than we would like.
+
+## Efficiency
+APRS does not have modern protocol features like forward error correction.  This means there is more opportunity for weak signal loss, and therefore more transmit power is needed to achieve range than over protocols.
+
+## Telemetry Fields
+APRS does not provide the ability to have formatted fields for sensor data. Any data other than GPS must be squished into the generic comment field and parsed out using custom software to create data plots.
+
+## Satellite Trackers
+Some high altitude balloons will use trackers such as the Spot 3 Trace or Iridium network trackers.  While these do not require an amateur radio license, they have significant downsides.
+
+## Price
+Typically, they will cost between $300-500 for the unit, and on top of that, require an annual subscription in order to use the satellite network.
+
+## Altitude
+Typically, these trackers will not provide data above certain altitudes, such as 18km. This means users will essentially lose communication with them for a large portion of the flight, receive no updates, and wait and hope for communication to resume on the descent.
+
+## Weight and Power
+These tracking systems also tend to be significantly heavier and require more power than amateur radio tracking systems.
+
+## Orientation Limitations
+These trackers typically need to be oriented correctly upwards in order to communicate with satellites. If a payload turns upside down, the trackers will stop working. This limitation does not exist with amateur radio trackers.
+</details>
+<br></br>
+# Make Sure You Know…
+## Requires Amateur Radio License with Callsign
+To acheive it’s long range, this transmitter requires an amateur radio callsign.  This allows you to legally transmit on the 70cm ham radio band.  When you download the codebase to flash to the tracker, you will need to open up the configuration file and enter your Callsign.
+
+If you are not a licensed amateur radio operator, don’t worry!  It’s easy to become one and get a callsign.  See what’s involved here:
+[How to get your amateur radio license](https://hamstudy.org/content/how)
+
+## Requires a Receive Station
+While we do have a special all-in-one Habtronics receive station in research and development, for now, using Tiny4FSK does require you to assemble your own receive station.  Don’t worry though!  With just a couple, cheap, off-the-shelf parts, it’s fairly simple for tech-minded tinkerers.
+
+# How to Use
+[See our GitHub page](https://mpkendall.com/tiny4fsk) for detailed instructions on how to set up and use Tiny4FSK in the field!
