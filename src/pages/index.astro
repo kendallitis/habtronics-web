@@ -11,7 +11,7 @@ import Layout from "../layouts/Layout.astro";
 		class="w-[75%] h-auto object-cover rounded-3xl mb-10"
 	></video>
 
-	<div class="relative w-[75%] group cursor-pointer">
+	<div class="relative w-[75%] group cursor-pointer" role="link" tabindex="0" onclick="location.href='/products/tiny4fsk'" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); location.href='/products/tiny4fsk'; }">
 		<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-black rounded-lg px-4 py-3 z-0">
 			<p class="text-white font-sora font-semibold">FEATURED PRODUCT</p>
 		</div>
@@ -24,8 +24,8 @@ import Layout from "../layouts/Layout.astro";
 			<img src="/logos/Tiny4FSK-Text.svg" alt="Tiny4FSK" class="w-130" />
 			<h2 class="text-black text-4xl font-sora">your next long-range tracker</h2>
 		</div>
-		<div class="absolute inset-0 flex items-center justify-center z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-default">
-			<a href="/shop" class="bg-white text-black font-sora font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-gray-300 transition-colors">
+		<div class="absolute inset-0 flex items-center justify-center z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
+			<a href="/products/tiny4fsk" class="bg-white text-black font-sora font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-gray-300 transition-colors">
 				Learn More
 			</a>
 		</div>

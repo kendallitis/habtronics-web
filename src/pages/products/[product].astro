@@ -25,7 +25,7 @@ const productDesc = Object.values(productDescriptions).find(
 ) as any;
 ---
 
-<Layout>
+<Layout class="!pb-0">
   <div
     id="product-page"
     class="-mt-20 grid grid-cols-[25%_75%] w-full min-h-screen"
@@ -34,13 +34,13 @@ const productDesc = Object.values(productDescriptions).find(
       id="showcase-section"
       class="bg-[#1B0C35] min-h-screen flex items-center flex-col"
     >
-      <div id="content" class="sticky top-0 flex flex-col items-center w-[400px]">
-        <div class="mt-[80px] mb-5 w-[400px] text-left">
+      <div id="content" class="sticky top-0 flex flex-col items-center w-[300px]">
+        <div class="mt-[80px] mb-5 w-[300px] text-left">
           <a href="/shop" class="text-white font-sora text-lg hover-50">&lt; Back to Shop</a>
         </div>
         <img
           src={productData.image}
-          class="w-[400px] object-cover rounded-2xl"
+          class="w-[80%] object-cover rounded-2xl"
         />
         <p class="mt-5 text-white font-sora text-3xl">{productData.name}</p>
         <div class="flex flex-row items-center gap-10 mt-10">
@@ -61,7 +61,7 @@ const productDesc = Object.values(productDescriptions).find(
       </div>
     </div>
     <div id="product-info" class="ml-20 mr-20">
-      <div class="mt-[100px] font-inter text-xl prose prose-xl max-w-none prose-headings:font-sora prose-h1:text-3xl prose-h1:font-extrabold prose-h2:font-inter prose-h2:font-bold prose-h2:text-lg prose-p:font-inter prose-p:text-sm">
+      <div class="mt-[100px] pb-15 font-inter text-xl prose prose-xl max-w-none prose-headings:font-sora prose-h1:text-3xl prose-h1:font-extrabold prose-h2:font-inter prose-h2:font-bold prose-h2:text-lg prose-p:font-inter prose-p:text-sm">
         <productDesc.Content />
       </div>
     </div>
@@ -105,5 +105,4 @@ const productDesc = Object.values(productDescriptions).find(
     }
   </script>
 
-  <!--  --></Layout
->
+</Layout>
