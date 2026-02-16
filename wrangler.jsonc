@@ -1,7 +1,7 @@
 {
-  "name": "habtronics",
+  "name": "habtronics-web",
   "compatibility_date": "2026-02-16",
   "assets": {
-    "directory": "./dist"
+    "directory": "./_astro"
   }
 }
