@@ -1,12 +1,13 @@
 import type { APIRoute } from 'astro';
-import Stripe from 'stripe';
 import { validateCartItems } from '../../lib/stripe';
 export const prerender = false;
 
-const stripe = new Stripe(import.meta.env.STRIPE_KEY);
+const STRIPE_KEY = import.meta.env.STRIPE_KEY as string | undefined;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    if (!STRIPE_KEY) throw new Error('Missing STRIPE_KEY');
+
     const { lineItems } = await request.json();
 
     if (!lineItems || lineItems.length === 0) {
@@ -21,25 +22,41 @@ export const POST: APIRoute = async ({ request }) => {
 
     const cleanSiteUrl = siteUrl.replace(/\/$/, '');
 
-    const session = await stripe.checkout.sessions.create({
-      ui_mode: 'embedded',
-      line_items: validatedLineItems, // Use validated items
-      mode: 'payment',
-      return_url: `${cleanSiteUrl}/return?session_id={CHECKOUT_SESSION_ID}`,
-      automatic_tax: { enabled: true },
-      shipping_address_collection: {
-        allowed_countries: ['US'],
-      },
-      allow_promotion_codes: true,
+    const body = new URLSearchParams();
+    body.append('ui_mode', 'embedded');
+    body.append('mode', 'payment');
+    body.append('return_url', `${cleanSiteUrl}/return?session_id={CHECKOUT_SESSION_ID}`);
+    body.append('automatic_tax[enabled]', 'true');
+    body.append('shipping_address_collection[allowed_countries][]', 'US');
+    body.append('allow_promotion_codes', 'true');
+
+    validatedLineItems.forEach((li, i) => {
+      body.append(`line_items[${i}][price]`, li.price);
+      body.append(`line_items[${i}][quantity]`, String(li.quantity));
     });
 
-    return new Response(JSON.stringify({ client_secret: session.client_secret }), {
+    const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${STRIPE_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: body.toString(),
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      console.error('Stripe checkout.sessions.create error:', data);
+      throw new Error(data.error?.message || 'Failed to create Stripe checkout session');
+    }
+
+    return new Response(JSON.stringify({ client_secret: data.client_secret }), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error) {
-    console.error('Error creating checkout session:', (error as Error).message);
-    const statusCode = (error as Error)?.message.includes('stock') ? 409 : 500;
-    return new Response(JSON.stringify({ error: (error as Error)?.message }), {
+  } catch (error: any) {
+    console.error('Error creating checkout session:', error?.message || error);
+    const statusCode = (error?.message || '').toLowerCase().includes('stock') ? 409 : 500;
+    return new Response(JSON.stringify({ error: error?.message || 'Internal error' }), {
       status: statusCode,
       headers: { 'Content-Type': 'application/json' },
     });

@@ -1,9 +1,7 @@
 ---
 export const prerender = false
-import Stripe from 'stripe';
 
 const PUBLIC_STRIPE_KEY = import.meta.env.PUBLIC_STRIPE_KEY;
-const stripe = new Stripe(import.meta.env.STRIPE_KEY);
 const { origin } = Astro.url;
 
 // Create a placeholder for line items

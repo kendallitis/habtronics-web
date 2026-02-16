@@ -1,23 +1,24 @@
 ---
-import Stripe from "stripe";
 export const prerender = false;
 import Layout from "../layouts/Layout.astro";
 
 const sessionID = Astro.url.searchParams.get("session_id");
+if (!sessionID) return Astro.redirect('/shop');
 
-const stripe = new Stripe(import.meta.env.STRIPE_KEY);
+const STRIPE_KEY = import.meta.env.STRIPE_KEY as string | undefined;
+if (!STRIPE_KEY) return Astro.redirect('/shop');
 
-let sessionx;
-try {
-  sessionx = await stripe.checkout.sessions.retrieve(sessionID!);
-} catch (e) {
-  // Redirect users back to checkout page if session is invalid
-  return Astro.redirect("/shop");
+const res = await fetch(`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionID)}`, {
+  headers: { Authorization: `Bearer ${STRIPE_KEY}` },
+});
+
+if (!res.ok) {
+  console.error('Failed to retrieve session:', await res.text());
+  return Astro.redirect('/shop');
 }
 
-const session = await stripe.checkout.sessions.retrieve(sessionID!);
-
-const { name, email } = session.customer_details!;
+const session = await res.json();
+const { name, email } = session.customer_details || { name: 'Customer', email: '' };
 ---
 
 <Layout>
