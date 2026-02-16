@@ -3,12 +3,12 @@ import { defineConfig } from 'astro/config';
 
 import node from '@astrojs/node';
 
-import vercel from '@astrojs/vercel';
-
 import tailwindcss from "@tailwindcss/vite";
 import mdx from '@astrojs/mdx';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
+
+import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,7 +20,7 @@ export default defineConfig({
 
   integrations: [mdx()],
 
-  adapter: vercel(),
+  adapter: cloudflare(),
 
   markdown: {
     remarkPlugins: [remarkGfm],
